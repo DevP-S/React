@@ -1,0 +1,38 @@
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+
+/* Rimuove padding e margin globali */
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #1c1c1e; /* sfondo uniforme */
+}
+
+.header {
+  background: #1976d2;
+  color: white;
+  padding: 15px;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-around;
+  background: #1976d2;
+  color: white;
+  padding: 10px 0;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
