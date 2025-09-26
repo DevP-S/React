@@ -18,13 +18,22 @@ const Home: React.FC = () => {
 
   // Stato privacy
   const [privacyEnabled, setPrivacyEnabled] = useState(false);
+  const [cloudEnable, setCloudEnabled] = useState(false);
+  const [geoleoca, setGeoLoca] = useState(false);
+
 
   // Legge lo stato privacy da localStorage
-  useEffect(() => {
-    const privacy = localStorage.getItem("privacy") === "true";
-    setPrivacyEnabled(privacy);
-  }, []);
+useEffect(() => {
+  const privacy = localStorage.getItem("privacy") === "true";
+  setPrivacyEnabled(privacy);
 
+  const cloud = localStorage.getItem("cloud") === "true";
+  setCloudEnabled(cloud);
+
+  const geoleoca = localStorage.getItem("geo") === "true";
+  setGeoLoca(geoleoca);
+  
+}, []);
   const cellStyle: React.CSSProperties = {
     display: "flex",
     alignItems: "center",
