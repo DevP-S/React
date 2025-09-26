@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PersonIcon from "@mui/icons-material/Person";
 import EmailIcon from "@mui/icons-material/Email";
 import PhoneIcon from "@mui/icons-material/Phone";
@@ -8,12 +8,22 @@ import TwitterIcon from "@mui/icons-material/Twitter";
 import GoogleIcon from "@mui/icons-material/Google";
 
 const Home: React.FC = () => {
+  // Stati dei campi
   const [name, setName] = useState("Mario Rossi");
   const [email, setEmail] = useState("mario@example.com");
   const [phone, setPhone] = useState("+39 123 456 789");
   const [street, setStreet] = useState("Via Roma 123");
   const [city, setCity] = useState("Milano");
   const [zip, setZip] = useState("20100");
+
+  // Stato privacy
+  const [privacyEnabled, setPrivacyEnabled] = useState(false);
+
+  // Legge lo stato privacy da localStorage
+  useEffect(() => {
+    const privacy = localStorage.getItem("privacy") === "true";
+    setPrivacyEnabled(privacy);
+  }, []);
 
   const cellStyle: React.CSSProperties = {
     display: "flex",
@@ -101,9 +111,10 @@ const Home: React.FC = () => {
           </div>
           <input
             type="text"
-            value={name}
+            value={privacyEnabled ? "*****" : name}
             onChange={(e) => setName(e.target.value)}
             style={inputStyle("25%")}
+            disabled={privacyEnabled}
           />
         </div>
 
@@ -149,9 +160,10 @@ const Home: React.FC = () => {
           </div>
           <input
             type="text"
-            value={street}
+            value={privacyEnabled ? "*****" : street}
             onChange={(e) => setStreet(e.target.value)}
             style={inputStyle("40%")}
+            disabled={privacyEnabled}
           />
         </div>
 
@@ -164,9 +176,10 @@ const Home: React.FC = () => {
           </div>
           <input
             type="text"
-            value={city}
+            value={privacyEnabled ? "*****" : city}
             onChange={(e) => setCity(e.target.value)}
             style={inputStyle("30%")}
+            disabled={privacyEnabled}
           />
         </div>
 

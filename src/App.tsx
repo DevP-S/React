@@ -6,6 +6,7 @@ import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import Home from "./pages/home";
+import Settings from "./pages/settings";
 
 const App: React.FC = () => {
   const [value, setValue] = useState(0);
@@ -28,7 +29,8 @@ const App: React.FC = () => {
         <Route path="/" element={<Home />} />
         <Route path="/cerca" element={<div>Cerca Page</div>} />
         <Route path="/preferiti" element={<div>Preferiti Page</div>} />
-        <Route path="/impostazioni" element={<div>Impostazioni Page</div>} />
+        <Route path="/impostazioni" element={<Settings />} />
+
       </Routes>
 
       <Paper
