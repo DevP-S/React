@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Routes, Route, useNavigate, useLocation, Navigate } from "react-router-dom";
 import { BottomNavigation, BottomNavigationAction, Paper } from "@mui/material";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
@@ -8,16 +8,36 @@ import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import Home from "./pages/home";
 import Settings from "./pages/settings";
 import SearchPage from "./pages/search";
+import Login from "./pages/login";
 
 const App: React.FC = () => {
-  const [value, setValue] = useState(0);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Sincronizza value della BottomNavigation con il path
+  const getValueFromPath = (path: string) => {
+    switch (path) {
+      case "/home": return 0;
+      case "/cerca": return 1;
+      case "/preferiti": return 2;
+      case "/impostazioni": return 3;
+      default: return 0;
+    }
+  };
+
+  const [value, setValue] = useState(getValueFromPath(location.pathname));
+
+  useEffect(() => {
+    setValue(getValueFromPath(location.pathname));
+  }, [location.pathname]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
-    // naviga alle pagine in base al pulsante
+    if (!isLoggedIn) return;
+
     switch (newValue) {
-      case 0: navigate("/"); break;
+      case 0: navigate("/home"); break;
       case 1: navigate("/cerca"); break;
       case 2: navigate("/preferiti"); break;
       case 3: navigate("/impostazioni"); break;
@@ -25,43 +45,57 @@ const App: React.FC = () => {
   };
 
   return (
-    <div style={{ paddingBottom: "70px" }}>
+    <div style={{ paddingBottom: isLoggedIn ? "70px" : "0" }}>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/cerca" element={<SearchPage />} />
-        <Route path="/preferiti" element={<div>Preefriti Page</div>} />
-        <Route path="/impostazioni" element={<Settings />} />
-
+        <Route
+          path="/"
+          element={
+            isLoggedIn ? (
+              <Navigate to="/home" />
+            ) : (
+              <Login
+                onLogin={() => setIsLoggedIn(true)}
+                onRegister={() => alert("Registrazione non implementata")}
+              />
+            )
+          }
+        />
+        <Route path="/home" element={isLoggedIn ? <Home /> : <Navigate to="/" />} />
+        <Route path="/cerca" element={isLoggedIn ? <SearchPage /> : <Navigate to="/" />} />
+        <Route path="/preferiti" element={isLoggedIn ? <div>Preferiti Page</div> : <Navigate to="/" />} />
+        <Route path="/impostazioni" element={isLoggedIn ? <Settings /> : <Navigate to="/" />} />
       </Routes>
 
-      <Paper
-        sx={{
-          position: "fixed",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          borderRadius: "16px 16px 0 0",
-          overflow: "hidden"
-        }}
-        elevation={6}
-      >
-        <BottomNavigation
-          showLabels
-          value={value}
-          onChange={handleChange}
+      {isLoggedIn && (
+        <Paper
           sx={{
-            height: 56,
-            backgroundColor: "black",
-            "& .Mui-selected, & .MuiBottomNavigationAction-label.Mui-selected": { color: "white" },
-            "& .MuiBottomNavigationAction-root": { color: "gray" }
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            borderRadius: "16px 16px 0 0",
+            overflow: "hidden"
           }}
+          elevation={6}
         >
-          <BottomNavigationAction label="Home" icon={<HomeRoundedIcon />} />
-          <BottomNavigationAction label="Cerca" icon={<SearchRoundedIcon />} />
-          <BottomNavigationAction label="Preferiti" icon={<FavoriteRoundedIcon />} />
-          <BottomNavigationAction label="Impostazioni" icon={<SettingsRoundedIcon />} />
-        </BottomNavigation>
-      </Paper>
+          <BottomNavigation
+            showLabels
+            value={value}
+            onChange={handleChange}
+            sx={{
+              height: 56,
+              backgroundColor: "black",
+              "& .Mui-selected, & .MuiBottomNavigationAction-label.Mui-selected": { color: "white" },
+              "& .MuiBottomNavigationAction-root": { color: "gray" }
+            }}
+          >
+            <BottomNavigationAction label="Home" icon={<HomeRoundedIcon />} />
+            <BottomNavigationAction label="Cerca" icon={<SearchRoundedIcon />} />
+            <BottomNavigationAction label="Preferiti" icon={<FavoriteRoundedIcon />} />
+            <BottomNavigationAction label="Impostazioni" icon={<SettingsRoundedIcon />} />
+          </BottomNavigation>
+        </Paper>
+      )}
     </div>
   );
 };
